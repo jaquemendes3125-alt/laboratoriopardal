@@ -33,7 +33,6 @@
         .status.blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
         .status.orange { background: rgba(249,115,22,0.15); color: #fb923c; }
 
-        /* 🧪 ABAS DO LABORATÓRIO */
         .tab-container { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
         .tab { flex: 1; min-width: 85px; padding: 10px 6px; border: none; border-radius: 8px; background: var(--card); color: var(--muted); font-size: 13px; cursor: pointer; transition: all 0.2s; }
         .tab.active { background: var(--blue); color: white; font-weight: 600; }
@@ -57,7 +56,6 @@
         .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
         .btn-group .btn { flex: 1; min-width: 120px; }
 
-        /* 📊 RESULTADOS */
         .result-box { background: var(--bg); border-radius: 10px; padding: 16px; margin-top: 14px; border-left: 4px solid var(--green); display: none; }
         .result-box.show { display: block; }
         .result-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; flex-wrap: wrap; gap: 6px; }
@@ -67,15 +65,12 @@
         .link-out { color: var(--cyan); text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 4px; margin-top: 12px; }
         .link-out:hover { text-decoration: underline; }
         
-        /*   TUBOS DE ENSAIO — VISUALIZAÇÃO */
         .tubo-container { display: flex; gap: 12px; justify-content: center; margin: 20px 0; flex-wrap: wrap; }
         .tubo { width: 50px; height: 140px; border: 3px solid rgba(255,255,255,0.2); border-top: none; border-radius: 0 0 12px 12px; position: relative; overflow: hidden; background: rgba(0,0,0,0.2); cursor: pointer; transition: all 0.2s; }
         .tubo:hover { transform: translateY(-5px); border-color: var(--cyan); }
         .tubo .liquido { position: absolute; bottom: 0; width: 100%; border-radius: 0 0 9px 9px; transition: height 0.5s ease, background 0.3s; }
-        .tubo-label { text-align: center; font-size: 11px; color: var(--muted); margin-top: 6px; }
         .tubo-selecionado { border-color: var(--yellow); box-shadow: 0 0 15px rgba(245,158,11,0.4); }
         
-        /* 🍃 ANÁLISE DE PLANTAS / FRUTAS */
         .nutrientes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 14px; }
         .nutriente { background: var(--bg); padding: 12px; border-radius: 8px; border-left: 3px solid var(--green); }
         .nutriente h4 { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
@@ -84,14 +79,12 @@
         .composto-item { padding: 10px; background: var(--bg); border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--purple); cursor: pointer; transition: all 0.2s; }
         .composto-item:hover { border-color: var(--cyan); background: var(--card2); }
         
-        /* ⚗️ BALANÇA E MISTURA */
-        .balanca { display: flex; align-items: center; justify-content: space-around; background: var(--bg); padding: 20px; border-radius: 12px; margin: 16px 0; }
-        .lado { text-align: center; }
+        .balanca { display: flex; align-items: center; justify-content: space-around; background: var(--bg); padding: 20px; border-radius: 12px; margin: 16px 0; flex-wrap: wrap; }
+        .lado { text-align: center; min-width: 100px; }
         .lado .valor { font-size: 28px; font-weight: bold; color: var(--cyan); }
         .lado .rotulo { font-size: 12px; color: var(--muted); margin-top: 4px; }
         .operador { font-size: 24px; color: var(--yellow); font-weight: bold; }
         
-        /* 📋 COMPARADOR */
         .comparador { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
         .comp-col { background: var(--bg); padding: 14px; border-radius: 10px; border: 1px solid var(--border); }
         .comp-col h4 { text-align: center; margin-bottom: 10px; color: var(--cyan); }
@@ -139,7 +132,7 @@
     </div>
 </header>
 
-<!-- ABAS PRINCIPAIS DO LABORATÓRIO -->
+<!-- ABAS PRINCIPAIS -->
 <div class="tab-container">
     <button class="tab active" data-tab="pesquisa">🔬 Pesquisa</button>
     <button class="tab" data-tab="botanica">🌿 Botânica</button>
@@ -148,9 +141,7 @@
     <button class="tab" data-tab="3d">🧊 3D</button>
 </div>
 
-<!-- ═══════════════════════════════════════════════════ -->
 <!-- ABA 1: PESQUISA MOLECULAR -->
-<!-- ═══════════════════════════════════════════════════ -->
 <div class="screen active" id="pesquisa">
     <div class="card">
         <h2>🧪 Fábrica de Moléculas — Busca Livre</h2>
@@ -193,9 +184,7 @@
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!-- ABA 2: ANÁLISE BOTÂNICA — JATOBÁ E MUITO MAIS -->
-<!-- ═══════════════════════════════════════════════════ -->
+<!-- ABA 2: ANÁLISE BOTÂNICA -->
 <div class="screen" id="botanica">
     <div class="card">
         <h2>🌿 Análise Botânica — Laboratório de Plantas</h2>
@@ -215,24 +204,19 @@
         
         <div class="loading" id="plant-loading"><div class="spinner"></div><br>Analisando composição da planta...</div>
         
-        <!-- 📊 RESULTADO DA ANÁLISE BOTÂNICA -->
         <div id="planta-result" style="display:none; margin-top:20px;">
             <h3 id="plant-nome" style="color:var(--yellow); font-size:20px; margin-bottom:10px;"></h3>
             <p id="plant-desc" style="color:var(--muted); font-size:14px; margin-bottom:16px;"></p>
             
-            <!-- 🫡 PARTES DA PLANTA -->
             <h4 style="color:var(--cyan); margin-bottom:10px;">🫡 Partes Analisadas</h4>
             <div id="plant-partes" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;"></div>
             
-            <!-- 🧪 NUTRIENTES E VITAMINAS -->
             <h4 style="color:var(--green); margin-bottom:10px;">💊 Vitaminas e Nutrientes</h4>
             <div class="nutrientes-grid" id="plant-nutrientes"></div>
             
-            <!-- ⚛️ COMPOSTOS ATIVOS (clicáveis para pesquisar) -->
             <h4 style="color:var(--purple); margin:20px 0 10px;">⚛️ Compostos Químicos Ativos <em>(clique para pesquisar)</em></h4>
             <div class="composto-lista" id="plant-compostos"></div>
             
-            <!-- 📋 AÇÕES E USOS -->
             <h4 style="color:var(--orange); margin:20px 0 10px;">📋 Propriedades e Usos</h4>
             <div id="plant-usos"></div>
         </div>
@@ -244,9 +228,7 @@
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!-- ABA 3: MISTURA E BALANÇA — EXPERIMENTOS -->
-<!-- ═══════════════════════════════════════════════════ -->
+<!-- ABA 3: MISTURA E BALANÇA -->
 <div class="screen" id="mistura">
     <div class="card">
         <h2>⚗️ Balança de Precisão — Montar Fórmulas</h2>
@@ -254,7 +236,6 @@
             Como num laboratório real: adicione, remova, calcule proporções e veja o resultado da mistura.
         </p>
         
-        <!-- 🫙 TUBOS DE ENSAIO VIRTUAIS -->
         <h4 style="margin-bottom:10px;">🫙 Tubos de Ensaio — Selecione para adicionar</h4>
         <div class="tubo-container">
             <div class="tubo" id="tubo1" onclick="selecionarTubo(1)">
@@ -275,7 +256,6 @@
         </div>
         <p style="text-align:center; font-size:12px; color:var(--muted); margin-bottom:20px;">Clique em um tubo para selecionar e ajustar</p>
         
-        <!-- ⚖️ BALANÇA -->
         <h4 style="margin-bottom:10px;">⚖️ Balança de Mistura</h4>
         <div class="balanca">
             <div class="lado">
@@ -310,9 +290,7 @@
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!-- ABA 4: COMPARADOR DE SUBSTÂNCIAS -->
-<!-- ═══════════════════════════════════════════════════ -->
+<!-- ABA 4: COMPARADOR -->
 <div class="screen" id="comparar">
     <div class="card">
         <h2>⚖️ Comparador de Substâncias</h2>
@@ -350,9 +328,7 @@
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════ -->
-<!-- ABA 5: VISUALIZAÇÃO 3D -->
-<!-- ═══════════════════════════════════════════════════ -->
+<!-- ABA 5: 3D -->
 <div class="screen" id="3d">
     <div class="card">
         <h2>🧊 Modelo 3D — Microscópio Molecular</h2>
@@ -378,14 +354,13 @@
 </footer>
 
 </div>
-<!-- FIM DO CONTEÚDO PROTEGIDO -->
 
 <script>
-// 🔒 SENHA
-const SENHA_CORRETA = "123";
+// 🔒 SENHA — CORRIGIDA E FUNCIONAL
+const SENHA_CORRETA = "Uguinho,ZezinhoeLuizinho"; // ✅ Senha: Uguinho,ZezinhoeLuizinho
 
 function verificarSenha() {
-    const digitada = document.getElementById('campoSenha').value;
+    const digitada = document.getElementById('campoSenha').value.trim();
     if (digitada === SENHA_CORRETA) {
         document.getElementById('telaSenha').classList.add('oculta');
         document.getElementById('conteudoPrincipal').classList.add('visivel');
@@ -395,8 +370,12 @@ function verificarSenha() {
         document.getElementById('campoSenha').value = '';
     }
 }
-document.getElementById('campoSenha').addEventListener('keydown', e => e.key === 'Enter' && verificarSenha());
-window.addEventListener('load', () => {
+
+document.getElementById('campoSenha').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') verificarSenha();
+});
+
+window.addEventListener('load', function() {
     if (localStorage.getItem('acessoLaboratorio') === 'concedido') {
         document.getElementById('telaSenha').classList.add('oculta');
         document.getElementById('conteudoPrincipal').classList.add('visivel');
@@ -413,7 +392,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     });
 });
 
-// 🔍 BUSCA MOLECULAR
+// 🔍 BUSCA MOLECULAR — CORRIGIDA
 async function buscarMolecula() {
     const nome = document.getElementById('mol-nome').value.trim();
     if (!nome) { alert('Digite um nome para pesquisar!'); return; }
@@ -454,7 +433,7 @@ async function buscarMolecula() {
     }
 }
 
-// 🌿 BASE DE DADOS BOTÂNICA INTERNA
+// 🌿 BASE BOTÂNICA
 const basePlantas = {
     "jatobá": {
         nome: "Jatobá — Hymenaea courbaril",
@@ -570,20 +549,17 @@ function analisarPlanta() {
         
         if (!planta) {
             loading.classList.remove('show');
-            alert(`⚠️ "${nome}" ainda não está na base. Tente: Jatobá, Açaí, Camomila ou Gengibre.\n\nOu pesquise os compostos individuais na aba "Pesquisa"!`);
+            alert(`⚠️ "${nome}" ainda não está na base. Tente: Jatobá, Açaí, Camomila ou Gengibre.`);
             return;
         }
         
-        // Preenche dados
         document.getElementById('plant-nome').textContent = planta.nome;
         document.getElementById('plant-desc').textContent = planta.desc;
         
-        // Partes
         document.getElementById('plant-partes').innerHTML = planta.partes.map(p => 
             `<span style="background:var(--bg); padding:6px 12px; border-radius:16px; font-size:13px; border:1px solid var(--border);">${p}</span>`
         ).join('');
         
-        // Nutrientes
         document.getElementById('plant-nutrientes').innerHTML = planta.nutrientes.map(n => `
             <div class="nutriente">
                 <h4>${n.nome}</h4>
@@ -591,7 +567,6 @@ function analisarPlanta() {
             </div>
         `).join('');
         
-        // Compostos (clicáveis!)
         document.getElementById('plant-compostos').innerHTML = planta.compostos.map(c => `
             <div class="composto-item" onclick="document.getElementById('mol-nome').value='${c.nome}'; document.querySelector('[data-tab=pesquisa]').click(); buscarMolecula();">
                 <strong>${c.nome}</strong> — ${c.desc}
@@ -599,7 +574,6 @@ function analisarPlanta() {
             </div>
         `).join('');
         
-        // Usos
         document.getElementById('plant-usos').innerHTML = planta.usos.map(u => 
             `<p style="padding:6px 0; border-bottom:1px solid var(--border); font-size:14px;">${u}</p>`
         ).join('');
@@ -609,7 +583,7 @@ function analisarPlanta() {
     }, 800);
 }
 
-// ⚗️ BALANÇA E MISTURA
+// ⚗️ BALANÇA
 let qtdA = 0, qtdB = 0;
 
 function ajustar(lado, valor) {
@@ -658,20 +632,6 @@ async function compararSubstancias() {
             const url = `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(nome)}/property/IUPACName,MolecularFormula,MolecularWeight/JSON`;
             const resp = await fetch(url);
             if (!resp.ok) return null;
-            const dados = await
-
-
-// ⚖️ COMPARADOR — CONTINUAÇÃO E CONCLUSÃO
-async function compararSubstancias() {
-    const a = document.getElementById('comp-a').value.trim();
-    const b = document.getElementById('comp-b').value.trim();
-    if (!a || !b) { alert('Preencha as duas substâncias!'); return; }
-    
-    async function buscarDados(nome) {
-        try {
-            const url = `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(nome)}/property/IUPACName,MolecularFormula,MolecularWeight/JSON`;
-            const resp = await fetch(url);
-            if (!resp.ok) return null;
             const dados = await resp.json();
             const p = dados.PropertyTable.Properties[0];
             return {
@@ -688,13 +648,11 @@ async function compararSubstancias() {
     const [dadosA, dadosB] = await Promise.all([buscarDados(a), buscarDados(b)]);
     const resultDiv = document.getElementById('comp-result');
     
-    // Preenche coluna A
     document.getElementById('comp-nome-a').textContent = dadosA ? dadosA.nome : a + ' (não encontrado)';
     document.getElementById('comp-form-a').textContent = dadosA ? dadosA.formula : '—';
     document.getElementById('comp-peso-a').textContent = dadosA ? dadosA.peso : '—';
     document.getElementById('comp-func-a').textContent = dadosA ? dadosA.funcao : 'Indisponível';
     
-    // Preenche coluna B
     document.getElementById('comp-nome-b').textContent = dadosB ? dadosB.nome : b + ' (não encontrado)';
     document.getElementById('comp-form-b').textContent = dadosB ? dadosB.formula : '—';
     document.getElementById('comp-peso-b').textContent = dadosB ? dadosB.peso : '—';
@@ -703,14 +661,14 @@ async function compararSubstancias() {
     resultDiv.style.display = 'grid';
 }
 
-// 🔬 ABRIR MODELO 3D
+// 🔬 ABRIR 3D
 function abrir3D() {
     const cid = document.getElementById('3d-cid').value.trim();
     if (!cid) { alert('Digite um CID!'); return; }
     window.open(`https://pubchem.ncbi.nlm.nih.gov/compound/${cid}#section=3D-Conformer`, '_blank');
 }
 
-// ⌨️ Busca ao pressionar Enter
+// ⌨️ Enter para buscar
 document.getElementById('mol-nome').addEventListener('keydown', e => {
     if (e.key === 'Enter') buscarMolecula();
 });
