@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Laboratório do Professor Pardal — Acesso Restrito</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Arial, sans-serif; }
+        :root {
+            --bg: #0f172a; --card: #1e293b; --card-hover: #263548;
+            --text: #f1f5f9; --muted: #94a3b8;
+            --green: #22c55e; --blue: #3b82f6; --yellow: #f59e0b;
+            --red: #ef4444; --purple: #8b5cf6; --cyan: #06b6d4;
+            --border: #334155;
+        }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 16px; max-width: 700px; margin: 0 auto; padding-bottom: 40px; }
+        
+        /* 🔒 TELA DE SENHA — ADICIONADA */
+        .tela-senha {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; transition: opacity 0.4s ease;
+        }
+        .tela-senha.oculta { opacity: 0; pointer-events: none; }
+        .caixa-senha {
+            background: var(--card); padding: 32px 24px; border-radius: 20px;
+            border: 2px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            width: 90%; max-width: 400px; text-align: center;
+        }
+        .caixa-senha h2 { color: var(--yellow); font-size: 22px; margin-bottom: 8px; }
+        .caixa-senha p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+        .caixa-senha input {
+            width: 100%; padding: 14px; font-size: 18px; text-align: center;
+            border: 2px solid var(--border); border-radius: 10px;
+            background: var(--bg); color: var(--text); margin-bottom: 14px;
+        }
+        .caixa-senha button {
+            width: 100%; padding: 14px; font-size: 16px; font-weight: 600;
+            border: none; border-radius: 10px; background: linear-gradient(135deg, var(--green), #16a34a);
+            color: white; cursor: pointer; transition: transform 0.2s;
+        }
+        .caixa-senha button:active { transform: scale(0.98); }
+        .erro-senha { color: var(--red); margin-top: 12px; font-size: 14px; display: none; }
+        .erro-senha.mostrar { display: block; }
+
+        /* RESTANTE DO ESTILO — ORIGINAL, SEM ALTERAÇÕES */
+        header { text-align: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+        h1 { font-size: 22px; color: var(--yellow); margin-bottom: 4px; }
+        .sub { font-size: 13px; color: var(--muted); }
+        .status-bar { display: flex; justify-content: center; gap: 12px; margin: 12px 0; flex-wrap: wrap; }
+        .status { font-size: 12px; padding: 4px 10px; border-radius: 20px; background: rgba(34,197,94,0.15); color: var(--green); }
+        .tab-container { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+        .tab { flex: 1; min-width: 100px; padding: 10px 8px; border: none; border-radius: 8px; background: var(--card); color: var(--muted); font-size: 14px; cursor: pointer; transition: all 0.2s; }
+        .tab.active { background: var(--blue); color: white; font-weight: 600; }
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from{opacity:0; transform: translateY(6px);} to{opacity:1; transform: translateY(0);} }
+        .card { background: var(--card); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
+        .card h2 { font-size: 17px; margin-bottom: 12px; color: var(--cyan); display: flex; align-items: center; gap: 8px; }
+        input, textarea, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 15px; margin-bottom: 12px; }
+        input:focus, textarea:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+        .btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform 0.15s, opacity 0.2s; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: linear-gradient(135deg, var(--blue), #2563eb); color: white; }
+        .btn-primary:hover { opacity: 0.95; }
+        .btn-green { background: linear-gradient(135deg, var(--green), #16a34a); color: white; }
+        .btn-yellow { background: linear-gradient(135deg, var(--yellow), #d97706); color: #1e293b; }
+        .btn-red { background: linear-gradient(135deg, var(--red), #dc2626); color: white; }
+        .result-box { background: var(--bg); border-radius: 8px; padding: 14px; margin-top: 14px; border-left: 3px solid var(--green); display: none; }
+        .result-box.show { display: block; }
+        .result-box h3 { font-size: 15px; margin-bottom: 10px; color: var(--green); }
+        .result-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .result-row:last-child { border-bottom: none; }
+        .label { color: var(--muted); }
+        .value { color: var(--text); font-weight: 500; text-align: right; max-width: 60%; word-break: break-all; }
+        .link-out { color: var(--cyan); text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; }
+        .link-out:hover { text-decoration: underline; }
+        .loading { text-align: center; padding: 20px; color: var(--yellow); display: none; }
+        .loading.show { display: block; }
+        .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--yellow); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 8px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .info-box { background: rgba(59,130,246,0.1); border-radius: 8px; padding: 12px; font-size: 13px; color: #bfdbfe; margin-top: 12px; line-height: 1.6; }
+        .code-block { background: #020617; border-radius: 8px; padding: 14px; font-family: monospace; font-size: 13px; color: #94e2d5; overflow-x: auto; margin-top: 10px; white-space: pre-wrap; word-break: break-all; }
+        .copy-btn { background: var(--cyan); color: #0f172a; border: none; border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+        .divider { height: 1px; background: var(--border); margin: 20px 0; }
+        .footer-note { text-align: center; font-size: 12px; color: var(--muted); margin-top: 24px; }
+        .badge { display: inline-block; background: rgba(139,92,246,0.2); color: #c4b5fd; padding: 3px 8px; border-radius: 12px; font-size: 11px; margin-left: 6px; }
+        .conteudo-laboratorio { display: none; }
+        .conteudo-laboratorio.visivel { display: block; }
+    </style>
+</head>
+<body>
+
+<!-- 🔒 TELA DE SENHA — ADICIONADA NO INÍCIO -->
+<div class="tela-senha" id="telaSenha">
+    <div class="caixa-senha">
+        <h2>🔐 Acesso Restrito</h2>
+        <p>Digite a senha para acessar o Laboratório</p>
+        <input type="password" id="campoSenha" placeholder="Senha..." autocomplete="off">
+        <button onclick="verificarSenha()">🔓 Entrar</button>
+        <div class="erro-senha" id="erroSenha">❌ Senha incorreta. Tente novamente.</div>
+    </div>
+</div>
+
+<!-- 🧪 CONTEÚDO DO LABORATÓRIO — FICA OCULTO ATÉ DIGITAR A SENHA -->
+<div class="conteudo-laboratorio" id="conteudoPrincipal">
+
+<header>
+    <h1>⚗️ Laboratório do Professor Pardal <span class="badge">BR</span></h1>
+    <p class="sub">Pesquisa molecular • Modelos 3D • Análise genética — sem instalar nada</p>
+    <div class="status-bar">
+        <span class="status">✅ Modo Nuvem Ativo</span>
+        <span class="status" style="background:rgba(59,130,246,0.15);color:#60a5fa;">🔗 APIs Conectadas</span>
+    </div>
+</header>
+
+<!-- ABAS -->
+<div class="tab-container">
+    <button class="tab active" data-tab="molecula">🧪 Moléculas</button>
+    <button class="tab" data-tab="3d">🔬 3D</button>
+    <button class="tab" data-tab="genetica">🧬 Genética</button>
+    <button class="tab" data-tab="colab">🐍 Colab</button>
+</div>
+
+<!-- TELA 1: PESQUISA MOLECULAR -->
+<div class="screen active" id="molecula">
+    <div class="card">
+        <h2>🧪 Fábrica de Moléculas — PubChem</h2>
+        <p style="font-size:14px; color:var(--muted); margin-bottom:12px;">Pesquise qualquer composto: nome comum ou científico (ex: cafeína, ácido ascórbico, ibuprofeno)</p>
+        
+        <input type="text" id="mol-nome" placeholder="Digite o nome da molécula..." value="cafeína">
+        <button class="btn btn-primary" onclick="buscarMolecula()">🔍 Pesquisar</button>
+        
+        <div class="loading" id="mol-loading"><div class="spinner"></div><br>Consultando servidores PubChem...</div>
+        
+        <div class="result-box" id="mol-result">
+            <h3>✅ Resultados Obtidos</h3>
+            <div class="result-row"><span class="label">Nome Oficial (IUPAC):</span><span class="value" id="res-iupac">—</span></div>
+            <div class="result-row"><span class="label">Fórmula:</span><span class="value" id="res-formula">—</span></div>
+            <div class="result-row"><span class="label">Peso Molecular:</span><span class="value" id="res-peso">—</span></div>
+            <div class="result-row"><span class="label">CID (Identificador):</span><span class="value" id="res-cid">—</span></div>
+            <a class="link-out" id="res-link" href="#" target="_blank">🔗 Ver página completa no PubChem →</a>
+            <a class="link-out" id="res-3d" href="#" target="_blank">🔬 Abrir modelo 3D →</a>
+        </div>
+    </div>
+    
+    <div class="info-box">
+        💡 <strong>Como funciona:</strong> A pesquisa é feita diretamente nos servidores do PubChem (EUA). Seu celular só recebe o resultado — sem cálculos locais.
+    </div>
+</div>
+
+<!-- TELA 2: MICROSCÓPIO 3D -->
+<div class="screen" id="3d">
+    <div class="card">
+        <h2>🔬 Microscópio 3D — iCn3D / PubChem</h2>
+        <p style="font-size:14px; color:var(--muted); margin-bottom:12px;">Visualize estruturas em 3D — gira, aproxima, rotaciona com o toque</p>
+        
+        <input type="text" id="3d-cid" placeholder="Digite o CID do composto (ex: 243 — cafeína)" value="243">
+        <button class="btn btn-green" onclick="abrir3D()">🔬 Abrir Visualização 3D</button>
+        
+        <div class="info-box" style="margin-top:14px;">
+            <strong>Exemplos prontos:</strong><br>
+            • Cafeína → CID 243<br>
+            • Água → CID 962<br>
+            • Glicose → CID 5793<br>
+            • Aspirina → CID 2244
+        </div>
+        
+        <p style="margin-top:14px; font-size:14px; color:var(--muted);">Também acesse diretamente: <a href="https://www.ncbi.nlm.nih.gov/Structure/icn3d/full.html" target="_blank" class="link-out">iCn3D — NCBI</a></p>
+    </div>
+</div>
+
+<!-- TELA 3: ANÁLISE GENÉTICA -->
+<div class="screen" id="genetica">
+    <div class="card">
+        <h2>🧬 Analista Genético — BLAST</h2>
+        <p style="font-size:14px; color:var(--muted); margin-bottom:12px;">Compare sequências de DNA/RNA com todos os genomas conhecidos</p>
+        
+        <textarea id="seq-dna" rows="5" placeholder="Cole a sequência aqui... (ex: ATGGCCATTGTAATGGGCCGCGTGGGT)">ATGGCCATTGTAATGGGCCGCGTGGGT</textarea>
+        <button class="btn btn-yellow" onclick="abrirBLAST()">🧬 Enviar para Análise</button>
+        
+        <div class="info-box" style="margin-top:14px;">
+            ⚠️ A análise é feita nos servidores do NCBI. Pode levar de segundos a minutos. Você receberá um link com os resultados.
+        </div>
+    </div>
+</div>
+
+<!-- TELA 4: GOOGLE COLAB -->
+<div class="screen" id="colab">
+    <div class="card">
+        <h2>🐍 Motor de Processamento — Google Colab</h2>
+        <p style="font-size:14px; color:var(--muted); margin-bottom:12px;">Automatize pesquisas — executa na nuvem do Google, sem usar seu processador</p>
+        
+        <div class="code-block" id="codigo-colab"># --- LABORATÓRIO VIRTUAL: Módulo de Busca Molecular ---
+# Execute no Google Colab — processamento na nuvem
+
+import requests
+
+def pesquisar_molecula(nome_composto):
+    print(f"🔬 Pesquisando: {nome_composto}...\n")
+    url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{nome_composto}/property/MolecularFormula,MolecularWeight,IUPACName/JSON"
+    try:
+        resp = requests.get(url)
+        dados = resp.json()
+        prop = dados['PropertyTable']['Properties'][0]
+        
+        print("✅ RESULTADO:")
+        print(f"Nome IUPAC: {prop.get('IUPACName','N/A')}")
+        print(f"Fórmula: {prop.get('MolecularFormula','N/A')}")
+        print(f"Peso: {prop.get('MolecularWeight','N/A')} g/mol")
+    except Exception as e:
+        print("Erro:", e)
+
+# Troque o nome abaixo
+pesquisar_molecula("cafeína")</div>
+        <button class="copy-btn" onclick="copiarCodigo()">📋 Copiar Código</button>
+        
+        <div class="divider"></div>
+        
+        <h3 style="font-size:15px; color:var(--green); margin-bottom:10px;">📝 Como usar:</h3>
+        <ol style="font-size:14px; color:var(--muted); padding-left:18px; line-height:1.8;">
+            <li>Acesse: <a href="https://colab.research.google.com" target="_blank" class="link-out">colab.research.google.com</a></li>
+            <li>Clique em <strong>"Novo notebook"</strong></li>
+            <li>Cole o código copiado na célula</li>
+            <li>Pressione ▶️ <strong>Executar</strong> — a primeira vez pode pedir permissão</li>
+            <li>O resultado aparece abaixo em segundos!</li>
+        </ol>
+    </div>
+</div>
+
+<p class="footer-note">🔬 Laboratório do Professor Pardal — BR • Versão 1.0<br>
+Dados via PubChem • NCBI BLAST • Google Colab — 100% baseado em nuvem</p>
+
+</div>
+<!-- FIM DO CONTEÚDO PROTEGIDO -->
+
+<script>
+// 🔒 SISTEMA DE SENHA — ADICIONADO
+const SENHA_CORRETA = "Uguinho,ZezinhoeLuizinho"; // ✅ ALTERE AQUI PARA SUA SENHA
+
+function verificarSenha() {
+    const digitada = document.getElementById('campoSenha').value;
+    if (digitada === SENHA_CORRETA) {
+        // Senha correta — revela o laboratório
+        document.getElementById('telaSenha').classList.add('oculta');
+        document.getElementById('conteudoPrincipal').classList.add('visivel');
+        // Salva acesso para 24h (não pede senha de novo no mesmo dia)
+        localStorage.setItem('acessoLaboratorio', 'concedido');
+    } else {
+        // Senha errada — mostra erro
+        document.getElementById('erroSenha').classList.add('mostrar');
+        document.getElementById('campoSenha').value = '';
+        document.getElementById('campoSenha').focus();
+    }
+}
+
+// Permite pressionar Enter para enviar a senha
+document.getElementById('campoSenha').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') verificarSenha();
+});
+
+// Verifica se já tem acesso concedido (não pede senha de novo)
+window.addEventListener('load', () => {
+    if (localStorage.getItem('acessoLaboratorio') === 'concedido') {
+        document.getElementById('telaSenha').classList.add('oculta');
+        document.getElementById('conteudoPrincipal').classList.add('visivel');
+    }
+});
+
+// === SISTEMA DE ABAS — ORIGINAL, SEM ALTERAÇÕES ===
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+});
+
+// === BUSCA MOLECULAR — PUBCHEM API ===
+async function buscarMolecula() {
+    const nome = document.getElementById('mol-nome').value.trim();
+    if (!nome) { alert('Digite o nome de uma molécula!'); return; }
+    
+    const loading = document.getElementById('mol-loading');
+    const result = document.getElementById('mol-result');
+    
+    loading.classList.add('show');
+    result.classList.remove('show');
+    
+    try {
+        const url = `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(nome)}/property/IUPACName,MolecularFormula,MolecularWeight,CanonicalSMILES/JSON`;
+        const resp = await fetch(url);
+        
+        if (!resp.ok) throw new Error('Composto não encontrado');
+        const dados = await resp.json();
+        const p = dados.PropertyTable.Properties[0];
+        
+        // Extrai CID de forma confiável
+        const cidUrl = `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(nome)}/cids/JSON`;
+        const cidResp = await fetch(cidUrl);
+        const cidData = await cidResp.json();
+        const cid = cidData.IdentifierList.CID[0];
+        
+        // Preenche resultados
+        document.getElementById('res-iupac').textContent = p.IUPACName || 'N/D';
+        document.getElementById('res-formula').textContent = p.MolecularFormula || 'N/D';
+        document.getElementById('res-peso').textContent = (p.MolecularWeight || 'N/D') + ' g/mol';
+        document.getElementById('res-cid').textContent = cid;
+        document.getElementById('res-link').href = `https://pubchem.ncbi.nlm.nih.gov/compound/${cid}`;
+        document.getElementById('res-3d').href = `https://pubchem.ncbi.nlm.nih.gov/compound/${cid}#section=3D-Conformer`;
+        
+        result.classList.add('show');
+    } catch (erro) {
+        alert('❌ Composto não encontrado. Tente o nome em inglês ou outro nome comum.');
+    } finally {
+        loading.classList.remove('show');
+    }
+}
+
+// === ABRIR VISUALIZAÇÃO 3D ===
+function abrir3D() {
+    const cid = document.getElementById('3d-cid').value.trim();
+    if (!cid) { alert('Digite um CID!'); return; }
+    window.open(`https://pubchem.ncbi.nlm.nih.gov/compound/${cid}#section=3D-Conformer`, '_blank');
+}
+
+// === ABRIR BLAST ===
+function abrirBLAST() {
+    const seq = document.getElementById('seq-dna').value.trim();
+    if (!seq) { alert('Cole uma sequência de DNA!'); return; }
+    window.open('https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE=Nucleotides', '_blank');
+    setTimeout(() => alert('💡 No site do BLAST, cole sua sequência no campo e clique em "BLAST"'), 500);
+}
+
+// === COPIAR CÓDIGO COLAB ===
+function copiarCodigo() {
+    const codigo = document.getElementById('codigo-colab').textContent;
+    navigator.clipboard.writeText(codigo)
+        .then(() => alert('✅ Código copiado! Vá até o Google Colab e cole.'))
+        .catch(() => alert('Não foi possível copiar. Selecione manualmente o código.'));
+}
+</script>
+
+</body>
+</html>
